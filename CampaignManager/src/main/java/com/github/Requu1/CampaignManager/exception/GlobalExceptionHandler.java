@@ -16,4 +16,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> productNotFoundException(ProductNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(SellerNotFoundException.class)
+    public ResponseEntity<?> sellerNotFoundException(SellerNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NoPermissionException.class)
+    public ResponseEntity<?> noPermissionException(NoPermissionException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<?> insufficientFundsException(InsufficientFundsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

@@ -30,6 +30,7 @@ public class Seller {
     private BigDecimal emeraldBalance=BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "seller",orphanRemoval = true)
+    @Builder.Default
     private List<Product> products=new ArrayList<>();
 
 }

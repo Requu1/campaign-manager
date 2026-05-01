@@ -2,7 +2,7 @@ package com.github.Requu1.CampaignManager.model;
 
 import com.github.Requu1.CampaignManager.util.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -26,16 +26,15 @@ public class Campaign {
     @JoinColumn(name="product_id",nullable=false)
     private Product product;
 
-    @Column(nullable = false)
-    @Min(value=100)
-    private BigDecimal bidAmount;
-
-    @Column(nullable = false)
-    private BigDecimal campaignFund;
-
     @Column(nullable=false)
     @Size(min=5,max=50)
     private String name;
+
+    @Column(nullable=false,precision=10,scale=2)
+    private BigDecimal bidAmount;
+
+    @Column(nullable=false,precision=10,scale=2)
+    private BigDecimal campaignFund;
 
     @Column(nullable=false)
     @Enumerated(EnumType.STRING)
@@ -51,6 +50,7 @@ public class Campaign {
     private List<String> keywords=new ArrayList<>();
 
     @Column(nullable=false)
+    @Positive
     private Integer radius;
 
 

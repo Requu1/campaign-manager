@@ -1,35 +1,81 @@
 package com.github.Requu1.CampaignManager.service;
 
+import com.github.Requu1.CampaignManager.dto.ProductCreateDto;
+import com.github.Requu1.CampaignManager.dto.ProductResponseDto;
+import com.github.Requu1.CampaignManager.exception.NoPermissionException;
 import com.github.Requu1.CampaignManager.exception.ProductNotFoundException;
 import com.github.Requu1.CampaignManager.model.Product;
 import com.github.Requu1.CampaignManager.repository.ProductRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final SellerService sellerService;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    private ProductResponseDto mapToDto(Product product){
+        return ProductResponseDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .build();
     }
 
-    public List<Product> getProductsForSeller(UUID sellerId){
-        return productRepository.findAllBySellerId(sellerId);
+    public List<ProductResponseDto> getProductsForSeller(UUID sellerId){
+        sellerService.findSeller(sellerId);
+        return productRepository.findAllBySellerId(sellerId).stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
-    public void addProduct(Product product) {
+
+    @Transactional
+    public ProductResponseDto addProduct(UUID sellerId, ProductCreateDto productDto){
+        Product product=Product.builder()
+                .name(productDto.getName())
+                .seller(sellerService.findSeller(sellerId))
+                .build();
         productRepository.save(product);
+        return mapToDto(product);
     }
 
-    public void deleteProductById(UUID id) {
-        productRepository.delete(findById(id));
+    @Transactional
+    public ProductResponseDto changeProductName(UUID sellerId, UUID productId, ProductCreateDto productDto){
+        sellerService.findSeller(sellerId);
+        Product product=findById(productId);
+        if(!product.getSeller().getId().equals(sellerId)){
+            throw new NoPermissionException(String.format("No permission to modify product with ID:%s",productId));
+        }
+        product.setName(productDto.getName());
+        return mapToDto(product);
     }
 
-    private Product findById(UUID id) {
+
+    @Transactional
+    public void deleteProductById(UUID sellerId, UUID productId) {
+        sellerService.findSeller(sellerId);
+        Product product = findById(productId);
+        if (!product.getSeller().getId().equals(sellerId)) {
+            throw new NoPermissionException(String.format("No permission to delete product with ID:%s",productId));
+        }
+        productRepository.delete(product);
+    }
+
+    Product findById(UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(()->new ProductNotFoundException(String.format("Product with ID:%s not found",id)));
+    }
+
+    public Product findOwnedProduct(UUID sellerId, UUID productId) {
+        Product product = findById(productId);
+        if (!product.getSeller().getId().equals(sellerId)) {
+            throw new NoPermissionException(String.format("No permission to access product with ID:%s", productId));
+        }
+        return product;
     }
 }

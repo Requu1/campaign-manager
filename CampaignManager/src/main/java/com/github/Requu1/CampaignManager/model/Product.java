@@ -28,10 +28,6 @@ public class Product {
     private List<Campaign> campaigns=new ArrayList<>();
 
     @Column(nullable=false)
-    @Size(min = 1,max=50)
+    @Size(min=1,max=50)
     private String name;
-
-    public void addCampaign(Campaign campaign) {this.campaigns.add(campaign);}
-    public void deleteCampaign(Campaign campaign) {this.campaigns.remove(campaign);}
-
 }
