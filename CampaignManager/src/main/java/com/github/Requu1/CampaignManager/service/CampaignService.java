@@ -1,7 +1,7 @@
 package com.github.Requu1.CampaignManager.service;
 
-import com.github.Requu1.CampaignManager.dto.CampaignCreateDto;
-import com.github.Requu1.CampaignManager.dto.CampaignResponseDto;
+import com.github.Requu1.CampaignManager.dto.campaign.CampaignCreateDto;
+import com.github.Requu1.CampaignManager.dto.campaign.CampaignResponseDto;
 import com.github.Requu1.CampaignManager.exception.CampaignNotFoundException;
 import com.github.Requu1.CampaignManager.exception.InsufficientFundsException;
 import com.github.Requu1.CampaignManager.exception.NoPermissionException;

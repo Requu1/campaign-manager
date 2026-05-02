@@ -1,4 +1,4 @@
-package com.github.Requu1.CampaignManager.dto;
+package com.github.Requu1.CampaignManager.dto.campaign;
 
 import com.github.Requu1.CampaignManager.util.Status;
 import lombok.*;
@@ -23,5 +23,4 @@ public class CampaignResponseDto {
     private String town;
     private Integer radius;
     private BigDecimal newEmeraldBalance;
-
 }

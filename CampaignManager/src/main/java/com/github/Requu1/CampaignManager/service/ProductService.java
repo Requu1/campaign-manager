@@ -1,7 +1,7 @@
 package com.github.Requu1.CampaignManager.service;
 
-import com.github.Requu1.CampaignManager.dto.ProductCreateDto;
-import com.github.Requu1.CampaignManager.dto.ProductResponseDto;
+import com.github.Requu1.CampaignManager.dto.product.ProductCreateDto;
+import com.github.Requu1.CampaignManager.dto.product.ProductResponseDto;
 import com.github.Requu1.CampaignManager.exception.NoPermissionException;
 import com.github.Requu1.CampaignManager.exception.ProductNotFoundException;
 import com.github.Requu1.CampaignManager.model.Product;
