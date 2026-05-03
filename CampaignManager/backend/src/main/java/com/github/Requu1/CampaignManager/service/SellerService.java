@@ -3,9 +3,11 @@ package com.github.Requu1.CampaignManager.service;
 import com.github.Requu1.CampaignManager.dto.seller.SellerLoginDto;
 import com.github.Requu1.CampaignManager.dto.seller.SellerRegisterDto;
 import com.github.Requu1.CampaignManager.dto.seller.SellerResponseDto;
+import com.github.Requu1.CampaignManager.exception.InsufficientFundsException;
 import com.github.Requu1.CampaignManager.exception.SellerNotFoundException;
 import com.github.Requu1.CampaignManager.model.Seller;
 import com.github.Requu1.CampaignManager.repository.SellerRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,6 +59,21 @@ public class SellerService {
         }
 
         return mapToDto(seller);
+    }
+
+    @Transactional
+    public void chargeFunds(UUID sellerId,BigDecimal amount){
+        Seller seller=findSeller(sellerId);
+        if(seller.getEmeraldBalance().compareTo(amount) < 0){
+            throw new InsufficientFundsException("Not enough funds on Emerald account");
+        }
+        seller.setEmeraldBalance(seller.getEmeraldBalance().subtract(amount));
+    }
+
+    @Transactional
+    public void refundFunds(UUID sellerId,BigDecimal amount){
+        Seller seller=findSeller(sellerId);
+        seller.setEmeraldBalance(seller.getEmeraldBalance().add(amount));
     }
 
     public SellerResponseDto getSellerById(UUID sellerId){

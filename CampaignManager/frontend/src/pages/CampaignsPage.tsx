@@ -42,7 +42,8 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [name, setName] = useState("");
-  const [keywords, setKeywords] = useState("");
+  const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
+  const [keywordInput, setKeywordInput] = useState("");
   const [bidAmount, setBidAmount] = useState("");
   const [campaignFund, setCampaignFund] = useState("");
   const [status, setStatus] = useState<CampaignStatus>("ON");
@@ -50,6 +51,20 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   const [radius, setRadius] = useState("");
 
   const [error, setError] = useState("");
+
+  const currentKeywordPart = keywordInput.trim().toLowerCase();
+
+  const filteredKeywordSuggestions = keywordSuggestions.filter((suggestion) => {
+    const normalizedSuggestion = suggestion.toLowerCase();
+
+    return (
+      currentKeywordPart.length > 0 &&
+      normalizedSuggestion.includes(currentKeywordPart) &&
+      !selectedKeywords.some(
+        (keyword) => keyword.toLowerCase() === normalizedSuggestion,
+      )
+    );
+  });
 
   useEffect(() => {
     const sellerId = localStorage.getItem("sellerId");
@@ -106,7 +121,8 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   function resetForm() {
     setEditingCampaignId(null);
     setName("");
-    setKeywords("");
+    setSelectedKeywords([]);
+    setKeywordInput("");
     setBidAmount("");
     setCampaignFund("");
     setStatus("ON");
@@ -118,16 +134,33 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   function buildCampaignRequest(): CampaignCreateRequest {
     return {
       name,
-      keywords: keywords
-        .split(",")
-        .map((keyword) => keyword.trim())
-        .filter((keyword) => keyword.length > 0),
+      keywords: selectedKeywords,
       bidAmount: Number(bidAmount),
       campaignFund: Number(campaignFund),
       status,
       town,
       radius: Number(radius),
     };
+  }
+
+  function addKeywordSuggestion(suggestion: string) {
+    const alreadySelected = selectedKeywords.some(
+      (keyword) => keyword.toLowerCase() === suggestion.toLowerCase(),
+    );
+
+    if (alreadySelected) {
+      setKeywordInput("");
+      return;
+    }
+
+    setSelectedKeywords((currentKeywords) => [...currentKeywords, suggestion]);
+    setKeywordInput("");
+  }
+
+  function removeSelectedKeyword(keywordToRemove: string) {
+    setSelectedKeywords((currentKeywords) =>
+      currentKeywords.filter((keyword) => keyword !== keywordToRemove),
+    );
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -159,7 +192,8 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   function openCreateForm() {
     setEditingCampaignId(null);
     setName("");
-    setKeywords("");
+    setSelectedKeywords([]);
+    setKeywordInput("");
     setBidAmount("");
     setCampaignFund("");
     setStatus("ON");
@@ -171,7 +205,8 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   function startEditing(campaign: CampaignResponse) {
     setEditingCampaignId(campaign.id);
     setName(campaign.name);
-    setKeywords(campaign.keywords.join(", "));
+    setSelectedKeywords(campaign.keywords);
+    setKeywordInput("");
     setBidAmount(String(campaign.bidAmount));
     setCampaignFund(String(campaign.campaignFund));
     setStatus(campaign.status);
@@ -266,18 +301,91 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
               />
             </div>
 
-            <div style={{ marginBottom: "12px" }}>
-              <label>Keywords separated by commas</label>
+            <div style={{ marginBottom: "12px", position: "relative" }}>
+              <label>Keywords</label>
               <br />
+
               <input
                 style={{ width: "100%", padding: "8px" }}
-                value={keywords}
-                onChange={(event) => setKeywords(event.target.value)}
-                placeholder="gaming, laptop, sale"
+                value={keywordInput}
+                onChange={(event) => setKeywordInput(event.target.value)}
+                placeholder="Start typing, e.g. gaming"
               />
 
+              {filteredKeywordSuggestions.length > 0 && (
+                <div
+                  style={{
+                    border: "1px solid #ddd",
+                    borderRadius: "6px",
+                    backgroundColor: "white",
+                    marginTop: "4px",
+                    maxHeight: "140px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {filteredKeywordSuggestions.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => addKeywordSuggestion(suggestion)}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        padding: "8px",
+                        border: "none",
+                        backgroundColor: "white",
+                        textAlign: "left",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {selectedKeywords.length > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "6px",
+                    marginTop: "8px",
+                  }}
+                >
+                  {selectedKeywords.map((keyword) => (
+                    <span
+                      key={keyword}
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "999px",
+                        backgroundColor: "#f3f4f6",
+                        border: "1px solid #ddd",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {keyword}{" "}
+                      <button
+                        type="button"
+                        onClick={() => removeSelectedKeyword(keyword)}
+                        style={{
+                          border: "none",
+                          backgroundColor: "transparent",
+                          cursor: "pointer",
+                          marginLeft: "4px",
+                        }}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
               {keywordSuggestions.length > 0 && (
-                <p>Suggestions: {keywordSuggestions.join(", ")}</p>
+                <p style={{ fontSize: "14px", color: "#555" }}>
+                  Available suggestions: {keywordSuggestions.join(", ")}
+                </p>
               )}
             </div>
 

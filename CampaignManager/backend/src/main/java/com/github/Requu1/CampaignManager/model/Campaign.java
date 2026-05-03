@@ -52,13 +52,4 @@ public class Campaign {
     @Column(nullable=false)
     @Positive
     private Integer radius;
-
-
-    public void switchStatus(){
-        if(status==Status.ON) {
-            status = Status.OFF;
-        }else{
-            status = Status.ON;
-        }
-    }
 }

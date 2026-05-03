@@ -4,7 +4,6 @@ import com.github.Requu1.CampaignManager.dto.product.ProductCreateDto;
 import com.github.Requu1.CampaignManager.dto.product.ProductResponseDto;
 import com.github.Requu1.CampaignManager.exception.NoPermissionException;
 import com.github.Requu1.CampaignManager.exception.ProductNotFoundException;
-import com.github.Requu1.CampaignManager.model.Campaign;
 import com.github.Requu1.CampaignManager.model.Product;
 import com.github.Requu1.CampaignManager.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -51,13 +50,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto changeProductName(UUID sellerId, UUID productId, ProductCreateDto productDto){
-        sellerService.findSeller(sellerId);
         Product product=findById(productId);
 
         if(!product.getSeller().getId().equals(sellerId)){
             throw new NoPermissionException(String.format("No permission to modify product with ID:%s",productId));
         }
-        if(productRepository.existsByNameAndSellerId(product.getName(),sellerId)){
+        if(!product.getName().equals(productDto.getName()) && productRepository.existsByNameAndSellerId(productDto.getName(),sellerId)){
             throw new IllegalArgumentException("Product with this name already exists");
         }
         product.setName(productDto.getName());
@@ -67,7 +65,6 @@ public class ProductService {
 
     @Transactional
     public void deleteProductById(UUID sellerId, UUID productId) {
-        sellerService.findSeller(sellerId);
         Product product = findById(productId);
         if (!product.getSeller().getId().equals(sellerId)) {
             throw new NoPermissionException(String.format("No permission to delete product with ID:%s",productId));

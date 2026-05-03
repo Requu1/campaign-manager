@@ -47,7 +47,7 @@ export function App() {
         <Navbar seller={seller} onLogout={handleLogout} />
 
         <Routes>
-          <Route path="/" element={<Navigate to="/products" />} />
+          <Route path="/" element={<Navigate to="/login" />} />
 
           <Route
             path="/login"
@@ -59,7 +59,10 @@ export function App() {
             element={<RegisterPage onAuthSuccess={refreshSeller} />}
           />
 
-          <Route path="/products" element={<ProductsPage />} />
+          <Route
+            path="/products"
+            element={<ProductsPage onSellerBalanceChanged={refreshSeller} />}
+          />
 
           <Route
             path="/products/:productId/campaigns"

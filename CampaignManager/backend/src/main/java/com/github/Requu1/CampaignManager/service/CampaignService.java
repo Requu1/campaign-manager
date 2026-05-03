@@ -3,7 +3,6 @@ package com.github.Requu1.CampaignManager.service;
 import com.github.Requu1.CampaignManager.dto.campaign.CampaignCreateDto;
 import com.github.Requu1.CampaignManager.dto.campaign.CampaignResponseDto;
 import com.github.Requu1.CampaignManager.exception.CampaignNotFoundException;
-import com.github.Requu1.CampaignManager.exception.InsufficientFundsException;
 import com.github.Requu1.CampaignManager.exception.NoPermissionException;
 import com.github.Requu1.CampaignManager.model.Campaign;
 import com.github.Requu1.CampaignManager.model.Product;
@@ -23,6 +22,7 @@ import java.util.UUID;
 public class CampaignService {
     private final CampaignRepository campaignRepository;
     private final ProductService productService;
+    private final SellerService sellerService;
 
     private CampaignResponseDto mapToDto(Campaign campaign) {
         return CampaignResponseDto.builder()
@@ -50,18 +50,13 @@ public class CampaignService {
     @Transactional
     public CampaignResponseDto createCampaign(UUID sellerId, UUID productId, CampaignCreateDto campaignCreateDto) {
         Product product = productService.findOwnedProduct(sellerId, productId);
-        Seller seller = product.getSeller();
-        BigDecimal requiredFund = campaignCreateDto.getCampaignFund();
 
         if(campaignRepository.existsByNameAndProductId(campaignCreateDto.getName(),productId)){
             throw new IllegalArgumentException("Campaign with the same name already exists");
         }
 
-        if (seller.getEmeraldBalance().compareTo(requiredFund) < 0) {
-            throw new InsufficientFundsException("Not enough funds on Emerald account");
-        }else{
-            seller.setEmeraldBalance(seller.getEmeraldBalance().subtract(requiredFund));
-        }
+        BigDecimal requiredFund = campaignCreateDto.getCampaignFund();
+        sellerService.chargeFunds(sellerId,requiredFund);
 
         Campaign campaign = Campaign.builder()
                 .product(product)
@@ -115,8 +110,7 @@ public class CampaignService {
             throw new NoPermissionException("Campaign does not belong to this product");
         }
 
-        Seller seller = campaign.getProduct().getSeller();
-        seller.setEmeraldBalance(seller.getEmeraldBalance().add(campaign.getCampaignFund()));
+        sellerService.refundFunds(sellerId,campaign.getCampaignFund());
         campaignRepository.delete(campaign);
     }
 
@@ -126,12 +120,9 @@ public class CampaignService {
         BigDecimal difference = newFund.subtract(oldFund);
 
         if (difference.compareTo(BigDecimal.ZERO) > 0) {
-            if (seller.getEmeraldBalance().compareTo(difference) < 0) {
-                throw new InsufficientFundsException("Not enough funds on Emerald account");
-            }
-            seller.setEmeraldBalance(seller.getEmeraldBalance().subtract(difference));
+            sellerService.chargeFunds(seller.getId(), difference);
         } else if (difference.compareTo(BigDecimal.ZERO) < 0) {
-            seller.setEmeraldBalance(seller.getEmeraldBalance().add(difference.abs()));
+            sellerService.refundFunds(seller.getId(), difference.abs());
         }
     }
 

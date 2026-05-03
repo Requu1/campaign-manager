@@ -11,7 +11,11 @@ import type { FormEvent } from "react";
 import { getErrorMsg } from "../api/errorsApi";
 import { ErrorMessage } from "../components/ErrorMsg";
 
-export function ProductsPage() {
+type ProductsPageProps = {
+  onSellerBalanceChanged: () => Promise<void>;
+};
+
+export function ProductsPage({ onSellerBalanceChanged }: ProductsPageProps) {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState<ProductResponse[]>([]);
@@ -84,6 +88,7 @@ export function ProductsPage() {
       setError("");
       await deleteProduct(productId);
       await loadProducts();
+      await onSellerBalanceChanged();
     } catch (error) {
       setError(getErrorMsg(error));
     }
