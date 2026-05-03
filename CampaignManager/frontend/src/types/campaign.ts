@@ -1,4 +1,4 @@
-export type CampaignStatus = "ON" | "OF";
+export type CampaignStatus = "ON" | "OFF";
 
 export interface CampaignCreateRequest {
   name: string;
@@ -11,10 +11,10 @@ export interface CampaignCreateRequest {
 }
 
 export interface CampaignResponse {
-  id: number;
-  productId: number;
+  id: string;
+  productId: string;
   name: string;
-  keywords: string;
+  keywords: string[];
   bidAmount: number;
   campaignFund: number;
   status: CampaignStatus;

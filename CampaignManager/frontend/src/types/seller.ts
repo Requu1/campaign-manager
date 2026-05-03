@@ -10,6 +10,7 @@ export interface SellerLoginRequest {
 }
 
 export interface SellerResponse {
+  id: string;
   username: string;
   email: string;
   emeraldBalance: number;
