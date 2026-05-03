@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -52,6 +53,10 @@ public class CampaignService {
         Seller seller = product.getSeller();
         BigDecimal requiredFund = campaignCreateDto.getCampaignFund();
 
+        if(campaignRepository.existsByNameAndProductId(campaignCreateDto.getName(),productId)){
+            throw new IllegalArgumentException("Campaign with the same name already exists");
+        }
+
         if (seller.getEmeraldBalance().compareTo(requiredFund) < 0) {
             throw new InsufficientFundsException("Not enough funds on Emerald account");
         }else{
@@ -81,6 +86,11 @@ public class CampaignService {
 
         if (!campaign.getProduct().getId().equals(productId)) {
             throw new NoPermissionException("Campaign does not belong to this product");
+        }
+
+        Optional<Campaign> existingCampaign=campaignRepository.findCampaignByNameAndProductId(campaignCreateDto.getName(),productId);
+        if (existingCampaign.isPresent() && !existingCampaign.get().getId().equals(campaignId)) {
+            throw new IllegalArgumentException("Campaign with the same name already exists");
         }
 
         updateCampaignFund(campaign, campaignCreateDto.getCampaignFund());

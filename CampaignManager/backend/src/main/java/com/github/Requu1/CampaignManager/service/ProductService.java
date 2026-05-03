@@ -4,6 +4,7 @@ import com.github.Requu1.CampaignManager.dto.product.ProductCreateDto;
 import com.github.Requu1.CampaignManager.dto.product.ProductResponseDto;
 import com.github.Requu1.CampaignManager.exception.NoPermissionException;
 import com.github.Requu1.CampaignManager.exception.ProductNotFoundException;
+import com.github.Requu1.CampaignManager.model.Campaign;
 import com.github.Requu1.CampaignManager.model.Product;
 import com.github.Requu1.CampaignManager.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,10 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto addProduct(UUID sellerId, ProductCreateDto productDto){
+        if(productRepository.existsByNameAndSellerId(productDto.getName(),sellerId)){
+            throw new IllegalArgumentException("Product already exists");
+        }
+
         Product product=Product.builder()
                 .name(productDto.getName())
                 .seller(sellerService.findSeller(sellerId))
@@ -48,8 +53,12 @@ public class ProductService {
     public ProductResponseDto changeProductName(UUID sellerId, UUID productId, ProductCreateDto productDto){
         sellerService.findSeller(sellerId);
         Product product=findById(productId);
+
         if(!product.getSeller().getId().equals(sellerId)){
             throw new NoPermissionException(String.format("No permission to modify product with ID:%s",productId));
+        }
+        if(productRepository.existsByNameAndSellerId(product.getName(),sellerId)){
+            throw new IllegalArgumentException("Product with this name already exists");
         }
         product.setName(productDto.getName());
         return mapToDto(product);

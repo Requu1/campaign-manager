@@ -2,6 +2,7 @@ package com.github.Requu1.CampaignManager.controller;
 
 import com.github.Requu1.CampaignManager.dto.product.ProductCreateDto;
 import com.github.Requu1.CampaignManager.dto.product.ProductResponseDto;
+import com.github.Requu1.CampaignManager.service.CampaignService;
 import com.github.Requu1.CampaignManager.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final CampaignService campaignService;
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getProductsForSeller(@RequestHeader("SellerId") UUID sellerId) {
@@ -33,6 +35,8 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@RequestHeader("SellerId")UUID sellerId,
                                            @PathVariable("id") UUID productId) {
+        campaignService.getCampaignsForProduct(sellerId,productId)
+                .forEach(campaign -> campaignService.removeCampaign(sellerId,productId,campaign.getId()));
         productService.deleteProductById(sellerId,productId);
         return ResponseEntity.noContent().build();
     }
