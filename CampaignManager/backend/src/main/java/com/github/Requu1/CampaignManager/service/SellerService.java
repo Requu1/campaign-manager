@@ -32,18 +32,19 @@ public class SellerService {
                 .build();
     }
 
+    @Transactional
     public SellerResponseDto register(SellerRegisterDto sellerRegisterDto){
-        if(sellerRepository.existsByEmail(sellerRegisterDto.getEmail())){
+        if(sellerRepository.existsByEmail(sellerRegisterDto.email())){
             throw new IllegalArgumentException("Account with this email already exists");
         }
-        if(sellerRepository.existsByUsername(sellerRegisterDto.getUsername())){
+        if(sellerRepository.existsByUsername(sellerRegisterDto.username())){
             throw new IllegalArgumentException("Account with this username already exists");
         }
 
         Seller seller = Seller.builder()
-                .email(sellerRegisterDto.getEmail())
-                .username(sellerRegisterDto.getUsername())
-                .password(passwordEncoder.encode(sellerRegisterDto.getPassword()))
+                .email(sellerRegisterDto.email())
+                .username(sellerRegisterDto.username())
+                .password(passwordEncoder.encode(sellerRegisterDto.password()))
                 .emeraldBalance(DEFAULT_EMERALD_BALANCE)
                 .build();
         sellerRepository.save(seller);
@@ -51,10 +52,10 @@ public class SellerService {
     }
 
     public SellerResponseDto login(SellerLoginDto sellerLoginDto){
-        Seller seller=sellerRepository.findByEmail(sellerLoginDto.getEmail())
+        Seller seller=sellerRepository.findByEmail(sellerLoginDto.email())
                 .orElseThrow(()-> new IllegalArgumentException("Invalid email or password"));
 
-        if(!passwordEncoder.matches(sellerLoginDto.getPassword(),seller.getPassword())){
+        if(!passwordEncoder.matches(sellerLoginDto.password(),seller.getPassword())){
             throw new IllegalArgumentException("Invalid email or password");
         }
 
@@ -81,7 +82,7 @@ public class SellerService {
     }
 
 
-    public Seller findSeller(UUID sellerId) {
+    Seller findSeller(UUID sellerId) {
         return sellerRepository.findById(sellerId)
                 .orElseThrow(()->new SellerNotFoundException(String.format("Seller with ID:%s not found.",sellerId)));
     }

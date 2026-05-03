@@ -7,20 +7,16 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CampaignResponseDto {
-    private UUID id;
-    private UUID productId;
-    private String name;
-    private List<String> keywords;
-    private BigDecimal bidAmount;
-    private BigDecimal campaignFund;
-    private Status status;
-    private String town;
-    private Integer radius;
-    private BigDecimal newEmeraldBalance;
-}
+public record CampaignResponseDto (
+    UUID id,
+    UUID productId,
+    String name,
+    List<String> keywords,
+    BigDecimal bidAmount,
+    BigDecimal campaignFund,
+    Status status,
+    String town,
+    Integer radius,
+    BigDecimal newEmeraldBalance
+){}

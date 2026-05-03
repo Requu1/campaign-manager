@@ -28,6 +28,6 @@ public class Product {
     private List<Campaign> campaigns=new ArrayList<>();
 
     @Column(nullable=false)
-    @Size(min=1,max=50)
+    @Size(min=1,max=20)
     private String name;
 }

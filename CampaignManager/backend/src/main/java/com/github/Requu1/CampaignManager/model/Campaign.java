@@ -27,7 +27,7 @@ public class Campaign {
     private Product product;
 
     @Column(nullable=false)
-    @Size(min=5,max=50)
+    @Size(min=5,max=30)
     private String name;
 
     @Column(nullable=false,precision=10,scale=2)

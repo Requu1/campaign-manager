@@ -5,14 +5,10 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class SellerResponseDto {
-    private UUID id;
-    private String email;
-    private String username;
-    private BigDecimal emeraldBalance;
-}
+public record SellerResponseDto (
+    UUID id,
+    String email,
+    String username,
+    BigDecimal emeraldBalance
+){}

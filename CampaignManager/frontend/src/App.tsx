@@ -48,22 +48,46 @@ export function App() {
 
           <Route
             path="/login"
-            element={<LoginPage onAuthSuccess={refreshSeller} />}
+            element={
+              seller ? (
+                <Navigate to="/products" replace />
+              ) : (
+                <LoginPage onAuthSuccess={refreshSeller} />
+              )
+            }
           />
 
           <Route
             path="/register"
-            element={<RegisterPage onAuthSuccess={refreshSeller} />}
+            element={
+              seller ? (
+                <Navigate to="/products" replace />
+              ) : (
+                <RegisterPage onAuthSuccess={refreshSeller} />
+              )
+            }
           />
 
           <Route
             path="/products"
-            element={<ProductsPage onSellerBalanceChanged={refreshSeller} />}
+            element={
+              seller ? (
+                <ProductsPage onSellerBalanceChanged={refreshSeller} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
 
           <Route
             path="/products/:productId/campaigns"
-            element={<CampaignsPage onSellerBalanceChanged={refreshSeller} />}
+            element={
+              seller ? (
+                <CampaignsPage onSellerBalanceChanged={refreshSeller} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
         </Routes>
       </div>

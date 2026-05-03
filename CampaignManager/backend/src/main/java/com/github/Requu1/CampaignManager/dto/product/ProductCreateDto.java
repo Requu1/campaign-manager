@@ -2,13 +2,11 @@ package com.github.Requu1.CampaignManager.dto.product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 
-@Getter
-@Setter
-public class ProductCreateDto {
+@Builder
+public record ProductCreateDto (
     @NotBlank(message = "Product name is mandatory")
-    @Size(min = 1, max = 50, message = "Product name must be between 1 and 50 characters")
-    private String name;
-}
+    @Size(min = 1, max = 20, message = "Product name must be between 1 and 20 characters")
+    String name
+){}

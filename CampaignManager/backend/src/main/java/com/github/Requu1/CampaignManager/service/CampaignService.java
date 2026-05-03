@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.github.Requu1.CampaignManager.util.DictionaryUtil.areKeywordsValid;
+import static com.github.Requu1.CampaignManager.util.DictionaryUtil.isTownValid;
+
 @Service
 @RequiredArgsConstructor
 public class CampaignService {
@@ -51,22 +54,30 @@ public class CampaignService {
     public CampaignResponseDto createCampaign(UUID sellerId, UUID productId, CampaignCreateDto campaignCreateDto) {
         Product product = productService.findOwnedProduct(sellerId, productId);
 
-        if(campaignRepository.existsByNameAndProductId(campaignCreateDto.getName(),productId)){
+        if(campaignRepository.existsByNameAndProductId(campaignCreateDto.name(),productId)){
             throw new IllegalArgumentException("Campaign with the same name already exists");
         }
 
-        BigDecimal requiredFund = campaignCreateDto.getCampaignFund();
+        if(!isTownValid(campaignCreateDto.town())){
+            throw new IllegalArgumentException("Town is not valid");
+        }
+
+        if(!areKeywordsValid(campaignCreateDto.keywords())){
+            throw new IllegalArgumentException("Keywords are not valid");
+        }
+
+        BigDecimal requiredFund = campaignCreateDto.campaignFund();
         sellerService.chargeFunds(sellerId,requiredFund);
 
         Campaign campaign = Campaign.builder()
                 .product(product)
-                .name(campaignCreateDto.getName())
-                .keywords(campaignCreateDto.getKeywords())
-                .bidAmount(campaignCreateDto.getBidAmount())
-                .campaignFund(campaignCreateDto.getCampaignFund())
-                .status(campaignCreateDto.getStatus())
-                .town(campaignCreateDto.getTown())
-                .radius(campaignCreateDto.getRadius())
+                .name(campaignCreateDto.name())
+                .keywords(campaignCreateDto.keywords())
+                .bidAmount(campaignCreateDto.bidAmount())
+                .campaignFund(campaignCreateDto.campaignFund())
+                .status(campaignCreateDto.status())
+                .town(campaignCreateDto.town())
+                .radius(campaignCreateDto.radius())
                 .build();
 
         campaignRepository.save(campaign);
@@ -83,20 +94,28 @@ public class CampaignService {
             throw new NoPermissionException("Campaign does not belong to this product");
         }
 
-        Optional<Campaign> existingCampaign=campaignRepository.findCampaignByNameAndProductId(campaignCreateDto.getName(),productId);
+        Optional<Campaign> existingCampaign=campaignRepository.findCampaignByNameAndProductId(campaignCreateDto.name(),productId);
         if (existingCampaign.isPresent() && !existingCampaign.get().getId().equals(campaignId)) {
             throw new IllegalArgumentException("Campaign with the same name already exists");
         }
 
-        updateCampaignFund(campaign, campaignCreateDto.getCampaignFund());
+        if(!isTownValid(campaignCreateDto.town())){
+            throw new IllegalArgumentException("Town is not valid");
+        }
 
-        campaign.setName(campaignCreateDto.getName());
-        campaign.setKeywords(campaignCreateDto.getKeywords());
-        campaign.setBidAmount(campaignCreateDto.getBidAmount());
-        campaign.setCampaignFund(campaignCreateDto.getCampaignFund());
-        campaign.setStatus(campaignCreateDto.getStatus());
-        campaign.setTown(campaignCreateDto.getTown());
-        campaign.setRadius(campaignCreateDto.getRadius());
+        if(!areKeywordsValid(campaignCreateDto.keywords())){
+            throw new IllegalArgumentException("Keywords are not valid");
+        }
+
+        updateCampaignFund(campaign, campaignCreateDto.campaignFund());
+
+        campaign.setName(campaignCreateDto.name());
+        campaign.setKeywords(campaignCreateDto.keywords());
+        campaign.setBidAmount(campaignCreateDto.bidAmount());
+        campaign.setCampaignFund(campaignCreateDto.campaignFund());
+        campaign.setStatus(campaignCreateDto.status());
+        campaign.setTown(campaignCreateDto.town());
+        campaign.setRadius(campaignCreateDto.radius());
 
         return mapToDto(campaign);
     }

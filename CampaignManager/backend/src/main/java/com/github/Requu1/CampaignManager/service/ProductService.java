@@ -36,12 +36,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto addProduct(UUID sellerId, ProductCreateDto productDto){
-        if(productRepository.existsByNameAndSellerId(productDto.getName(),sellerId)){
+        if(productRepository.existsByNameAndSellerId(productDto.name(),sellerId)){
             throw new IllegalArgumentException("Product already exists");
         }
 
         Product product=Product.builder()
-                .name(productDto.getName())
+                .name(productDto.name())
                 .seller(sellerService.findSeller(sellerId))
                 .build();
         productRepository.save(product);
@@ -55,10 +55,15 @@ public class ProductService {
         if(!product.getSeller().getId().equals(sellerId)){
             throw new NoPermissionException(String.format("No permission to modify product with ID:%s",productId));
         }
-        if(!product.getName().equals(productDto.getName()) && productRepository.existsByNameAndSellerId(productDto.getName(),sellerId)){
+
+        if(product.getName().equals(productDto.name())){
+            return mapToDto(product);
+        }
+
+        if(productRepository.existsByNameAndSellerId(productDto.name(),sellerId)){
             throw new IllegalArgumentException("Product with this name already exists");
         }
-        product.setName(productDto.getName());
+        product.setName(productDto.name());
         return mapToDto(product);
     }
 
@@ -79,7 +84,7 @@ public class ProductService {
                 .orElseThrow(()->new ProductNotFoundException(String.format("Product with ID:%s not found",id)));
     }
 
-    public Product findOwnedProduct(UUID sellerId, UUID productId) {
+    Product findOwnedProduct(UUID sellerId, UUID productId) {
         Product product = findById(productId);
         if (!product.getSeller().getId().equals(sellerId)) {
             throw new NoPermissionException(String.format("No permission to access product with ID:%s", productId));
