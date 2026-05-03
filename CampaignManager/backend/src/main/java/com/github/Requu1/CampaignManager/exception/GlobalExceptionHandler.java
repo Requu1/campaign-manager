@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoPermissionException.class)
     public ResponseEntity<?> noPermissionException(NoPermissionException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler(InsufficientFundsException.class)

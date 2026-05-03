@@ -22,7 +22,7 @@ export async function loginSeller(
   return response.data;
 }
 
-export async function getSeller(sellerId: string): Promise<SellerResponse> {
-  const response = await clientApi.get<SellerResponse>(`/sellers/${sellerId}`);
+export async function getCurrentSeller(): Promise<SellerResponse> {
+  const response = await clientApi.get<SellerResponse>("/sellers/me");
   return response.data;
 }

@@ -23,12 +23,10 @@ export function LoginPage({ onAuthSuccess }: LoginPageProps) {
     try {
       setError("");
 
-      const seller = await loginSeller({
+      await loginSeller({
         email,
         password,
       });
-
-      localStorage.setItem("sellerId", seller.id);
 
       await onAuthSuccess();
 
