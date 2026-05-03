@@ -30,13 +30,11 @@ export function RegisterPage({ onAuthSuccess }: RegisterPageProps) {
     try {
       setError("");
 
-      const seller = await registerSeller({
+      await registerSeller({
         username,
         email,
         password,
       });
-
-      localStorage.setItem("sellerId", seller.id);
 
       await onAuthSuccess();
 

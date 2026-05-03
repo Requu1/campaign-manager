@@ -25,13 +25,6 @@ export function ProductsPage({ onSellerBalanceChanged }: ProductsPageProps) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const sellerId = localStorage.getItem("sellerId");
-
-    if (!sellerId) {
-      navigate("/login");
-      return;
-    }
-
     loadProducts();
   }, [navigate]);
 

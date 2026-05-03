@@ -42,10 +42,9 @@ public class SellerController {
         return ResponseEntity.ok(sellerResponseDto);
     }
 
-    @GetMapping("/{sellerId}")
-    public ResponseEntity<SellerResponseDto> seller(@PathVariable("sellerId") UUID sellerId){
-        SellerResponseDto sellerResponseDto= sellerService.getSellerById(sellerId);
-        return ResponseEntity.ok(sellerResponseDto);
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.noContent().build();
     }
-
 }

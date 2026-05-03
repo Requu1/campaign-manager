@@ -2,8 +2,6 @@ package com.github.Requu1.CampaignManager.controller;
 
 import com.github.Requu1.CampaignManager.dto.product.ProductCreateDto;
 import com.github.Requu1.CampaignManager.dto.product.ProductResponseDto;
-import com.github.Requu1.CampaignManager.exception.NoPermissionException;
-import com.github.Requu1.CampaignManager.service.CampaignService;
 import com.github.Requu1.CampaignManager.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -22,7 +20,6 @@ import static com.github.Requu1.CampaignManager.util.SessionUtil.getSellerIdFrom
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private final CampaignService campaignService;
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getProductsForSeller(HttpSession session) {
@@ -42,8 +39,6 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(HttpSession session,
                                            @PathVariable("id") UUID productId) {
         UUID sellerId=getSellerIdFromSession(session);
-        campaignService.getCampaignsForProduct(sellerId,productId)
-                .forEach(campaign -> campaignService.removeCampaign(sellerId,productId,campaign.getId()));
         productService.deleteProductById(sellerId,productId);
         return ResponseEntity.noContent().build();
     }

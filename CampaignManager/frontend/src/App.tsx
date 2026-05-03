@@ -5,7 +5,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ProductsPage } from "./pages/ProductsPage";
 import { CampaignsPage } from "./pages/CampaignsPage";
-import { getCurrentSeller } from "./api/sellersApi";
+import { getCurrentSeller, logoutSeller } from "./api/sellersApi";
 import type { SellerResponse } from "./types/seller";
 
 export function App() {
@@ -20,8 +20,12 @@ export function App() {
     }
   }
 
-  function handleLogout() {
-    setSeller(null);
+  async function handleLogout() {
+    try {
+      await logoutSeller();
+    } finally {
+      setSeller(null);
+    }
   }
 
   useEffect(() => {

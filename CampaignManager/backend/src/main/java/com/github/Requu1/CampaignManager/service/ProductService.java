@@ -69,6 +69,8 @@ public class ProductService {
         if (!product.getSeller().getId().equals(sellerId)) {
             throw new NoPermissionException(String.format("No permission to delete product with ID:%s",productId));
         }
+        product.getCampaigns()
+                .forEach(campaign-> sellerService.refundFunds(sellerId,campaign.getCampaignFund()));
         productRepository.delete(product);
     }
 

@@ -67,13 +67,6 @@ export function CampaignsPage({ onSellerBalanceChanged }: CampaignsPageProps) {
   });
 
   useEffect(() => {
-    const sellerId = localStorage.getItem("sellerId");
-
-    if (!sellerId) {
-      navigate("/login");
-      return;
-    }
-
     if (!productId) {
       navigate("/products");
       return;

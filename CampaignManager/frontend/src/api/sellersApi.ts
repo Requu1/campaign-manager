@@ -26,3 +26,7 @@ export async function getCurrentSeller(): Promise<SellerResponse> {
   const response = await clientApi.get<SellerResponse>("/sellers/me");
   return response.data;
 }
+
+export async function logoutSeller(): Promise<void> {
+  await clientApi.post<void>("/sellers/logout");
+}
