@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://campaign-manager-8lrs.onrender.com/api/:path*"
+    }
+  ]
+}
