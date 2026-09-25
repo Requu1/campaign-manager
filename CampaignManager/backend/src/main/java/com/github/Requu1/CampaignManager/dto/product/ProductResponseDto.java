@@ -6,7 +6,8 @@ import java.util.UUID;
 
 
 @Builder
-public record ProductResponseDto (
-    UUID id,
-    String name
-){}
+public record ProductResponseDto(
+        UUID id,
+        String name
+) {
+}

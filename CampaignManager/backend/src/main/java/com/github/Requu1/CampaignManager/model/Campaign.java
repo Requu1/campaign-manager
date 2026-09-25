@@ -23,33 +23,33 @@ public class Campaign {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="product_id",nullable=false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable=false)
-    @Size(min=5,max=30)
+    @Column(nullable = false)
+    @Size(min = 5, max = 30)
     private String name;
 
-    @Column(nullable=false,precision=10,scale=2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal bidAmount;
 
-    @Column(nullable=false,precision=10,scale=2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal campaignFund;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String town;
 
     @ElementCollection
-    @CollectionTable(name="campaign_keywords",joinColumns = @JoinColumn(name="campaign_id"))
+    @CollectionTable(name = "campaign_keywords", joinColumns = @JoinColumn(name = "campaign_id"))
     @Builder.Default
-    @Column(nullable=false)
-    private List<String> keywords=new ArrayList<>();
+    @Column(nullable = false)
+    private List<String> keywords = new ArrayList<>();
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Positive
     private Integer radius;
 }

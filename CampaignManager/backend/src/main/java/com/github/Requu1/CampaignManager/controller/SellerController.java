@@ -23,17 +23,17 @@ public class SellerController {
 
     @PostMapping("/register")
     public ResponseEntity<SellerResponseDto> register(@RequestBody @Valid SellerRegisterDto sellerRegisterDto,
-                                                      HttpSession session){
-        SellerResponseDto sellerResponseDto=sellerService.register(sellerRegisterDto);
-        session.setAttribute("LOGGED_IN_SELLER_ID",sellerResponseDto.id());
+                                                      HttpSession session) {
+        SellerResponseDto sellerResponseDto = sellerService.register(sellerRegisterDto);
+        session.setAttribute("LOGGED_IN_SELLER_ID", sellerResponseDto.id());
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerResponseDto);
     }
 
     @PostMapping("/login")
     public ResponseEntity<SellerResponseDto> login(@RequestBody @Valid SellerLoginDto sellerLoginDto,
-                                                   HttpSession session){
-        SellerResponseDto sellerResponseDto=sellerService.login(sellerLoginDto);
-        session.setAttribute("LOGGED_IN_SELLER_ID",sellerResponseDto.id());
+                                                   HttpSession session) {
+        SellerResponseDto sellerResponseDto = sellerService.login(sellerLoginDto);
+        session.setAttribute("LOGGED_IN_SELLER_ID", sellerResponseDto.id());
         return ResponseEntity.ok(sellerResponseDto);
     }
 

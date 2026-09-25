@@ -6,9 +6,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Builder
-public record SellerResponseDto (
-    UUID id,
-    String email,
-    String username,
-    BigDecimal emeraldBalance
-){}
+public record SellerResponseDto(
+        UUID id,
+        String email,
+        String username,
+        BigDecimal emeraldBalance
+) {
+}

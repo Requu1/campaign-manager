@@ -8,15 +8,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record CampaignResponseDto (
-    UUID id,
-    UUID productId,
-    String name,
-    List<String> keywords,
-    BigDecimal bidAmount,
-    BigDecimal campaignFund,
-    Status status,
-    String town,
-    Integer radius,
-    BigDecimal newEmeraldBalance
-){}
+public record CampaignResponseDto(
+        UUID id,
+        UUID productId,
+        String name,
+        List<String> keywords,
+        BigDecimal bidAmount,
+        BigDecimal campaignFund,
+        Status status,
+        String town,
+        Integer radius,
+        BigDecimal newEmeraldBalance
+) {
+}

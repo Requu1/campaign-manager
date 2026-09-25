@@ -20,14 +20,14 @@ public class Product {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="seller_id",nullable=false)
+    @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
     @Builder.Default
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Campaign> campaigns=new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Campaign> campaigns = new ArrayList<>();
 
-    @Column(nullable=false)
-    @Size(min=1,max=20)
+    @Column(nullable = false)
+    @Size(min = 1, max = 20)
     private String name;
 }

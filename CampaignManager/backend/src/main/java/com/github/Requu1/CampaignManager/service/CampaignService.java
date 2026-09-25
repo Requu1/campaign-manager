@@ -54,20 +54,20 @@ public class CampaignService {
     public CampaignResponseDto createCampaign(UUID sellerId, UUID productId, CampaignCreateDto campaignCreateDto) {
         Product product = productService.findOwnedProduct(sellerId, productId);
 
-        if(campaignRepository.existsByNameAndProductId(campaignCreateDto.name(),productId)){
+        if (campaignRepository.existsByNameAndProductId(campaignCreateDto.name(), productId)) {
             throw new IllegalArgumentException("Campaign with the same name already exists");
         }
 
-        if(!isTownValid(campaignCreateDto.town())){
+        if (!isTownValid(campaignCreateDto.town())) {
             throw new IllegalArgumentException("Town is not valid");
         }
 
-        if(!areKeywordsValid(campaignCreateDto.keywords())){
+        if (!areKeywordsValid(campaignCreateDto.keywords())) {
             throw new IllegalArgumentException("Keywords are not valid");
         }
 
         BigDecimal requiredFund = campaignCreateDto.campaignFund();
-        sellerService.chargeFunds(sellerId,requiredFund);
+        sellerService.chargeFunds(sellerId, requiredFund);
 
         Campaign campaign = Campaign.builder()
                 .product(product)
@@ -94,16 +94,16 @@ public class CampaignService {
             throw new NoPermissionException("Campaign does not belong to this product");
         }
 
-        Optional<Campaign> existingCampaign=campaignRepository.findCampaignByNameAndProductId(campaignCreateDto.name(),productId);
+        Optional<Campaign> existingCampaign = campaignRepository.findCampaignByNameAndProductId(campaignCreateDto.name(), productId);
         if (existingCampaign.isPresent() && !existingCampaign.get().getId().equals(campaignId)) {
             throw new IllegalArgumentException("Campaign with the same name already exists");
         }
 
-        if(!isTownValid(campaignCreateDto.town())){
+        if (!isTownValid(campaignCreateDto.town())) {
             throw new IllegalArgumentException("Town is not valid");
         }
 
-        if(!areKeywordsValid(campaignCreateDto.keywords())){
+        if (!areKeywordsValid(campaignCreateDto.keywords())) {
             throw new IllegalArgumentException("Keywords are not valid");
         }
 
@@ -129,7 +129,7 @@ public class CampaignService {
             throw new NoPermissionException("Campaign does not belong to this product");
         }
 
-        sellerService.refundFunds(sellerId,campaign.getCampaignFund());
+        sellerService.refundFunds(sellerId, campaign.getCampaignFund());
         campaignRepository.delete(campaign);
     }
 

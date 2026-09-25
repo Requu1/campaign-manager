@@ -23,32 +23,32 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getProductsForSeller(HttpSession session) {
-        UUID sellerId=getSellerIdFromSession(session);
+        UUID sellerId = getSellerIdFromSession(session);
         return ResponseEntity.ok(productService.getProductsForSeller(sellerId));
     }
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(HttpSession session,
                                                             @RequestBody @Valid ProductCreateDto productDto) {
-        UUID sellerId=getSellerIdFromSession(session);
-        ProductResponseDto createProductDto=productService.addProduct(sellerId,productDto);
+        UUID sellerId = getSellerIdFromSession(session);
+        ProductResponseDto createProductDto = productService.addProduct(sellerId, productDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createProductDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(HttpSession session,
                                            @PathVariable("id") UUID productId) {
-        UUID sellerId=getSellerIdFromSession(session);
-        productService.deleteProductById(sellerId,productId);
+        UUID sellerId = getSellerIdFromSession(session);
+        productService.deleteProductById(sellerId, productId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProductName(HttpSession session,
                                                                 @PathVariable("id") UUID productId,
-                                                                @RequestBody @Valid ProductCreateDto productDto){
-        UUID sellerId=getSellerIdFromSession(session);
-        ProductResponseDto product=productService.changeProductName(sellerId,productId,productDto);
+                                                                @RequestBody @Valid ProductCreateDto productDto) {
+        UUID sellerId = getSellerIdFromSession(session);
+        ProductResponseDto product = productService.changeProductName(sellerId, productId, productDto);
         return ResponseEntity.ok(product);
     }
 }

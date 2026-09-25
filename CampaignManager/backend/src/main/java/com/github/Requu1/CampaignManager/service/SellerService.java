@@ -33,11 +33,11 @@ public class SellerService {
     }
 
     @Transactional
-    public SellerResponseDto register(SellerRegisterDto sellerRegisterDto){
-        if(sellerRepository.existsByEmail(sellerRegisterDto.email())){
+    public SellerResponseDto register(SellerRegisterDto sellerRegisterDto) {
+        if (sellerRepository.existsByEmail(sellerRegisterDto.email())) {
             throw new IllegalArgumentException("Account with this email already exists");
         }
-        if(sellerRepository.existsByUsername(sellerRegisterDto.username())){
+        if (sellerRepository.existsByUsername(sellerRegisterDto.username())) {
             throw new IllegalArgumentException("Account with this username already exists");
         }
 
@@ -51,11 +51,11 @@ public class SellerService {
         return mapToDto(seller);
     }
 
-    public SellerResponseDto login(SellerLoginDto sellerLoginDto){
-        Seller seller=sellerRepository.findByEmail(sellerLoginDto.email())
-                .orElseThrow(()-> new IllegalArgumentException("Invalid email or password"));
+    public SellerResponseDto login(SellerLoginDto sellerLoginDto) {
+        Seller seller = sellerRepository.findByEmail(sellerLoginDto.email())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
-        if(!passwordEncoder.matches(sellerLoginDto.password(),seller.getPassword())){
+        if (!passwordEncoder.matches(sellerLoginDto.password(), seller.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
@@ -63,28 +63,28 @@ public class SellerService {
     }
 
     @Transactional
-    public void chargeFunds(UUID sellerId,BigDecimal amount){
-        Seller seller=findSeller(sellerId);
-        if(seller.getEmeraldBalance().compareTo(amount) < 0){
+    public void chargeFunds(UUID sellerId, BigDecimal amount) {
+        Seller seller = findSeller(sellerId);
+        if (seller.getEmeraldBalance().compareTo(amount) < 0) {
             throw new InsufficientFundsException("Not enough funds on Emerald account");
         }
         seller.setEmeraldBalance(seller.getEmeraldBalance().subtract(amount));
     }
 
     @Transactional
-    public void refundFunds(UUID sellerId,BigDecimal amount){
-        Seller seller=findSeller(sellerId);
+    public void refundFunds(UUID sellerId, BigDecimal amount) {
+        Seller seller = findSeller(sellerId);
         seller.setEmeraldBalance(seller.getEmeraldBalance().add(amount));
     }
 
-    public SellerResponseDto getSellerById(UUID sellerId){
+    public SellerResponseDto getSellerById(UUID sellerId) {
         return mapToDto(findSeller(sellerId));
     }
 
 
     Seller findSeller(UUID sellerId) {
         return sellerRepository.findById(sellerId)
-                .orElseThrow(()->new SellerNotFoundException(String.format("Seller with ID:%s not found.",sellerId)));
+                .orElseThrow(() -> new SellerNotFoundException(String.format("Seller with ID:%s not found.", sellerId)));
     }
 
 }

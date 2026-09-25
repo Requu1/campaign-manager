@@ -19,21 +19,21 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable=false,unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Builder.Default
-    @Column(nullable = false,precision =10, scale =2)
-    private BigDecimal emeraldBalance=BigDecimal.ZERO;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal emeraldBalance = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "seller",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Product> products=new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
 }

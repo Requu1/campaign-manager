@@ -9,8 +9,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CampaignRepository extends JpaRepository<Campaign,UUID> {
+public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
     List<Campaign> findAllByProductId(UUID productId);
+
     Optional<Campaign> findCampaignByNameAndProductId(String name, UUID productId);
+
     boolean existsByNameAndProductId(String name, UUID productId);
 }
