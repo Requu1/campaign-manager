@@ -3,10 +3,6 @@
 Campaign Manager is a simple full-stack web application for managing product advertising campaigns.  
 The application allows sellers to create, view, edit and delete separate campaigns for the products they want to sell.
 
-## Live Demo
-
-Live version: https://campaign-manager-amber.vercel.app
-
 ## Main Features
 
 - Create a new campaign
